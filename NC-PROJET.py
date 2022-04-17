@@ -44,13 +44,13 @@ def ML_null2(V):
     return gamma*(w_inf(V)-W/to_inf(V))
 
 def V_nullcline(V):
-    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+I)/gK*(V-ECa)
+    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+I)/gK*(V-EK)
 def V_nullcline1(V):
-    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+10)/gK*(V-ECa)
+    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+10)/gK*(V-EK)
 def V_nullcline2(V):
-    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+20)/gK*(V-ECa)
+    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+20)/gK*(V-EK)
 def V_nullcline3(V):
-    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+60)/gK*(V-ECa)
+    return(-gCa*(0.5*(1+tanh((V-V1)/V2)))*(V-ECa)-gL*(V-EL)+60)/gK*(V-EK)
 
 
 V = linspace(-100,100,10000)
