@@ -63,7 +63,7 @@ V = linspace(-65,20,100000)
 # color=['r-', 'b-', 'y-', 'g-', 'p-']
 # for I in range(0,100,10):
 #     print(I)
-#     plt.plot(V, V_nullclineI(V, I), color[I%20])
+#     plt.plot(V, V_nullcline(V), color[I%20])
 # plt.legend(['MN_null1', 'MN_null2'])
 # plt.title('Le temps passe et la mort approche')
 # plt.show()
