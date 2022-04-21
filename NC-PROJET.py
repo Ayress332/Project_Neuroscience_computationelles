@@ -180,7 +180,7 @@ class ML():
         return array([[-8*w + (v - 120)*(0.122222222222222*tanh(v/18 + 0.0666666666666667)**2 - 0.122222222222222) - 2.2*tanh(v/18 + 0.0666666666666667) - 4.2,
           960 - 8*v], 
          [(0.000666666666666667 - 0.000666666666666667*tanh(v/30 - 3/5)**2)*cosh(v/60 - 1/30) + (-0.04*w + 0.02*tanh(v/30 - 3/5) + 0.02)*sinh(v/60 - 1/30)/60, 
-          -0.04*cosh(v/60 - 1/30)]])
+          -0.04*cosh(v/60 - 1/30)]],dtype=float)
 
 
 
@@ -189,15 +189,35 @@ if __name__ == '__main__':
     V = linspace(-65,20,1000) #abscisse
     ML=ML() #modèle Moris Lecart
     #idx = ML.V_intersept(w_inf, V_nullcline) #points d'équilibre
+    
+    #--------------Equilibre 0-----------###
     j = ML.J(-1, 0.18)
-    #det = linalg.det(j)
+    det = linalg.det(j)
+    vp = linalg.eigvals(j)
+    print(vp[0]*vp[1])
     #print(ML.dV())
-    print(f"""
-          {j}
-          {type(j)}
-          j : {j}
-          rang : {det}
-          """)
+    
+    #Equilibre 1###
+    j2 = ML.J(3, 0.27)
+    det2 = linalg.det(j2)
+    vp = linalg.eigvals(j2)
+    print(vp[0]*vp[1])
+    #print(ML.dV())
+    
+    #Equilibre 2###
+    j3 = ML.J(-60,0.01)
+    det3 = linalg.det(j3)
+    vp = linalg.eigvals(j3)
+    print(vp[0])
+    
+    l=[det,det2,det3]
+    for i in range (len(l)):
+        if l[i] > 0:
+            print(f"j {i} n'est pas un point selle")
+        else:
+            print(f"j {i} est un point selle")
+    #print(ML.dV())
+   
           
     
     
