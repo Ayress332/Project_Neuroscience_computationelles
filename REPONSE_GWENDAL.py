@@ -53,8 +53,8 @@ if __name__ == '__main__':
   I = 5
   v = -60
   w = 0
-  x1 = derive_v('v',I)
-  x2 = derive_v('w',I)
+  x1 = derive_v('v', I)
+  x2 = derive_v('w', I)
   x3 = derive_w('v')
   x4 = derive_w('w')
   print(x1)
@@ -62,6 +62,7 @@ if __name__ == '__main__':
   print(x3)
   print(x4)
   #print(a)
+  plot(I)
 
 
 
