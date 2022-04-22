@@ -175,10 +175,9 @@ class ML():
 if __name__ == '__main__':
     
     ml = ML()
-    #ml.isoclines(0, 100, 4)
-    #ml.steady_point()
-    ml.middle_branche(0.001, 0.04, 4)
     ml.isoclines(0, 100, 4)
-    #print(ml.V_intersept(ml.w_inf, ml.V_null))
+    
+    print(ml.V_intersept(ml.w_inf, ml.V_null))
     ml.steady_point()
    
+    ml.middle_branche(0.001, 0.04, 4)
