@@ -6,7 +6,7 @@ Created on Fri Apr 22 13:12:43 2022
 """
 
 from numpy import *
-from sympy import *
+import sympy as sp
 import matplotlib.pyplot as plt
 
 
@@ -45,28 +45,28 @@ class ML():
     def to_inf(self, V):
         return 1/(cosh((V-self.V3)/(2*self.V4)))
 
-    def V_null(self, V):
-        return (-self.gCa*(0.5*(1+tanh((V-self.V1)/self.V2)))*(V-self.ECa)-self.gK*self.W*(V-self.ECa)-self.gL*(V-self.EL)+self.I)/self.C
-
     def W_null(self, V):
         return self.gamma*(self.w_inf(V)-self.W/self.to_inf(V))
 
-    def V_nullcline(self, V):
+    def V_null(self, V, I):
         #return(-gCa*((1+tanh((V-V1)/V2))/2)*(V-ECa)-gL*(V-EL)+I)/gK*(V-EK)
-        return (self.I - self.gL*(V-self.EL)-self.gCa*((1 + tanh((V -self.V1)/self.V2))/2)*(V-self.ECa))/(self.gK*(V-self.EK))
+        return (I - self.gL*(V-self.EL)-self.gCa*((1 + tanh((V -self.V1)/self.V2))/2)*(V-self.ECa))/(self.gK*(V-self.EK))
     
     #==========================================================================
     def isoclines(self, Imin, Imax, nI):
         """draw model's isoclines, for n different values of I between Imin and Imax
         """
         V=self.V
-        color=['r-', 'b-', 'y-', 'g-', 'p-']
-        for I in range(Imin, Imax+1, (Imax+1-Imin)//nI ):
-            plt.plot(V, self.V_null(V), color[I%len(color)])
-        plt.legend(['W(t)', 'V(t) : I=0', 'V : I=20', 'V : I=60'])
-        plt.title("Tracé des isoclines de W et de V pour différentes valeurs de I")
+        color=['r-', 'y-', 'g-', 'purple', 'black']
+        h=(Imax-Imin)//nI
+        for I in range(Imin, Imax, h ):
+            plt.plot(V, self.V_null(V, I), (10*color)[I%4])
+            print(I)
+            print("c", I%h)
+        plt.plot(V, self.w_inf(V), "b-")
+        plt.legend(['V(t) : I=0', 'V(t) : I=25', 'V(t) : I=75', 'V(t) : I=100', 'W(t)'])
+        plt.title("Tracé des isoclines de W et de V \n pour différentes valeurs de I")
         plt.show()
-        pass
     
     def V_intersept(self, iso1, iso2):
         """return nulcline intersection coordinates.
@@ -144,5 +144,5 @@ class ML():
 if __name__ == '__main__':
     
     ml = ML()
-    ml.isoclines(0,100,10)
+    ml.isoclines(0, 100, 4)
    

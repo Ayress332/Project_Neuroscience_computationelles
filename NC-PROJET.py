@@ -6,10 +6,7 @@ Created on Sat Apr 16 16:59:37 2022
 """
 
 from numpy import *
-#import numpy as np
-from sympy import *
-
-#import simpy as sp
+import sympy as sp
 import matplotlib.pyplot as plt
 
 EL=-60
@@ -72,17 +69,17 @@ V = linspace(-65,20,1000)
 
 
 
-#y2=w_inf(V)
+y2=w_inf(V)
 y3 = V_nullcline1(V)
-# y4 = V_nullcline2(V)
-# y5 = V_nullcline3(V)
+y4 = V_nullcline2(V)
+y5 = V_nullcline3(V)
 
 
 
-# plt.plot(V, y2, 'b-')
+plt.plot(V, y2, 'b-')
 plt.plot(V, y3, 'y-')
-# plt.plot(V, y4, 'black')
-# plt.plot(V, y5, 'g-')
+plt.plot(V, y4, 'black')
+plt.plot(V, y5, 'g-')
 
 plt.xlabel('V')
 plt.ylabel('W(V)')
@@ -198,7 +195,7 @@ class ML():
         """
         return array([[-8*w + (v - 120)*(0.122222222222222*tanh(v/18 + 0.0666666666666667)**2 - 0.122222222222222) - 2.2*tanh(v/18 + 0.0666666666666667) - 4.2,
           960 - 8*v], 
-         [(0.000666666666666667 - 0.000666666666666667*tanh(v/30 - 3/5)**2)*cosh(v/60 - 1/30) + (-0.04*w + 0.02*tanh(v/30 - 3/5) + 0.02)*sinh(v/60 - 1/30)/60, 
+          [(0.000666666666666667 - 0.000666666666666667*tanh(v/30 - 3/5)**2)*cosh(v/60 - 1/30) + (-0.04*w + 0.02*tanh(v/30 - 3/5) + 0.02)*sinh(v/60 - 1/30)/60, 
           -0.04*cosh(v/60 - 1/30)]],dtype=float)
 
     def steady_point(self):
