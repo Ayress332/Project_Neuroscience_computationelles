@@ -35,7 +35,7 @@ def W(I,v): #W nullcline
 
 def plot(I): #plot V nullcline et W nullcline
   #intervalle
-  v = np.linspace(-100,1,100)
+  v = np.linspace(-100,-60,100)
   
   #functions
   y = V(I,v)
