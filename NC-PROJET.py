@@ -213,7 +213,7 @@ class ML():
                 print(f"j {i} n'est pas un point selle")
             else:
                 print(f"j {i} est un point selle")
-"""
+
 if __name__ == '__main__':
     
     V = linspace(-65,20,1000) #abscisse
@@ -264,7 +264,6 @@ if __name__ == '__main__':
     
 
     
-  """  
 
 
 

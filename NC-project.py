@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 
 class ML():
-    """modelisation of Moris Lecar model
+    """modelisation of Moris Lecar model.
     """
     def __init__(self):
         self.V = linspace(-65,20,1000)
@@ -54,48 +54,76 @@ class ML():
     
     #==========================================================================
     def isoclines(self, Imin, Imax, nI):
-        """draw model's isoclines, for n different values of I between Imin and Imax
+        """show impact of gamma variation
         """
         V=self.V
         color=['r-', 'y-', 'g-', 'purple', 'black']
         h=(Imax-Imin)//nI
+        i_c=0
+        legend=[]
         for I in range(Imin, Imax, h ):
-            plt.plot(V, self.V_null(V, I), (10*color)[I%4])
-            print(I)
-            print("c", I%h)
+            plt.plot(V, self.V_null(V, I), color[i_c%len(color)])
+            i_c+=1
+            legend.append(f"V(t) : I={I}")
         plt.plot(V, self.w_inf(V), "b-")
-        plt.legend(['V(t) : I=0', 'V(t) : I=25', 'V(t) : I=75', 'V(t) : I=100', 'W(t)'])
+        legend.append("W(t)")
+        plt.legend(legend)
         plt.title("Tracé des isoclines de W et de V \n pour différentes valeurs de I")
         plt.show()
+        
+    def middle_branche(self, Gmin, Gmax, nG):
+        """Tracé de W pour différentes valeurs de gamma
+        """
+        V=self.V
+        legend=[]#initialisation légende
+        color=['r-', 'y-', 'g-', 'purple', 'black']
+        i_c=0#compteur pour indice couleur
+        for G in linspace(Gmin, Gmax, nG):
+            self.gamma = G #changement valeur de gamma
+            plt.plot(V, self.W_null(V), color[i_c%len(color)])
+            i_c+=1
+            legend.append(f"W(t) : gamma={G}")
+        #plt.plot(V, self.w_inf(V), "b-")
+        plt.legend(legend)
+        plt.title("Tracé de W pour différentes valeurs de gamma")
+        plt.show()
+        self.gamma=0.04 #réinitialisation de gamma
     
     def V_intersept(self, iso1, iso2):
-        """return nulcline intersection coordinates.
+        """return nulcline intersection coordinates. Can be use to get intersection point of
+        any two fuctions iso1 and iso2
         """
         #https://askcodez.com/intersection-de-deux-graphes-en-python-trouvez-la-valeur-x.html
-        Vl = linspace(-65, -40, 1000)
-        Vr = linspace(-40, 20, 1000)
-        V = linspace(-65, 20, 100)
-        f = iso2(V)
+        V = linspace(-65, 20, 100) #abscisse
+        f = iso2(V, 0)
         g = iso1(V)
         
         plt.plot(V, f, '-')
         plt.plot(V, g, '-')
         
-        idx = argwhere(diff(sign(f - g)) != 0).reshape(-1) + 0
-        print(f"""
-              a0 : ({idx[0]}, {iso1(idx[0])}, {iso2(idx[0])})
-              a1 : ({idx[1]}, {iso1(idx[1])})
-              a2 : ({idx[2]}, {iso1(idx[2])})
-              """)
-        plt.plot(V[idx], f[idx], 'ro')
-        plt.show()
-        intersections_l = [(Vl[i], f[i]) for i,_ in enumerate(zip(f,g)) if abs(f[i]-g[i])<10**-4]
-        intersections_r = [(Vr[i], f[i]) for i,_ in enumerate(zip(f,g)) if abs(f[i]-g[i])<10**-4]
-        print(intersections_l, intersections_r)
-        print(idx)
-        return intersections_l, intersections_r
-    
+        idx = argwhere(diff(sign(f - g)) != 0).reshape(-1) + 0 #get intersection abscisses
 
+        plt.plot(V[idx], f[idx], 'ro') #draw the red dots
+        plt.legend(['V(t) : I=0', 'W(t)', "points intersection"])
+        plt.title("Tracé des points d'intersection de V et W")
+        plt.show()
+        
+        intersections=[]
+        for i in range(len(V[idx])):
+            xai = V[idx][i]
+            yai = f[idx][i]
+            intersections.append((xai, yai))
+        return intersections
+    
+    def ML_pros(self):
+        """draw the V and W processus (integration of V' and W' in the ML model)
+        """
+        v = Symbol("v")
+        w = Symbol("w")
+        dw = self.gamma * (((1 + tanh((v - self.V2)/self.V4))/2)- w)/((cosh((v - self.V3)/(2*self.V4)))**-1)
+        dv = -self.gCa * ((1 + tanh((v - self.V1)/self.V2))/2) * (v - self.ECa) - self.gK * w * (v - self.ECa) - self.gL* (v-self.EL) + self.I
+        return [Integral(dw, v)]
+        
     def jacobienne(self, I):
         """Returne the symbolic expression of the ML system's Jacobienne
         """
@@ -106,15 +134,6 @@ class ML():
         J = [[dv.diff(v), "-------------", dv.diff(w)],[dw.diff(v), "-------------", dw.diff(w)]]
         return J
     
-    def ML_pros(self):
-        """
-        """
-        v = Symbol("v")
-        w = Symbol("w")
-        dw = self.gamma * (((1 + tanh((v - self.V2)/self.V4))/2)- w)/((cosh((v - self.V3)/(2*self.V4)))**-1)
-        dv = -self.gCa * ((1 + tanh((v - self.V1)/self.V2))/2) * (v - self.ECa) - self.gK * w * (v - self.ECa) - self.gL* (v-self.EL) + self.I
-        return [Integral(dw, v)]
-        
     def J(self, v, w):
         """Calculate the Jacobienne of ML system, based on ML.jacobienne() output expression
         """
@@ -126,23 +145,40 @@ class ML():
     def steady_point(self):
         """Determinates the nature of steady states
         """
-        equilibre = V_intersept(self.w_inf(V), self.V_nullcline())
+        #----
         det = [] #déterminants
         vp = [] #valeur propres
         tr = [] #trace
-        #----remplissage de boucle
-        
+        intersept = self.V_intersept(self.w_inf, self.V_null)
+        #----
+        for dot in intersept:
+            xai=dot[0]
+            yai=dot[1]
+            jac = ml.J(xai, yai) #jacobienne au point dot
+            det.append(linalg.det(jac)) #déterminant
+            vp.append(linalg.eigvals(jac)) #valeur propre
+            tr.append(sum(vp[-1])) #trace
+            
         #----interprétation des résultats
-        for i in range (len(l)):
-            if l[i] > 0:
-                print(f"j {i} n'est pas un point selle")
-            else:
-                print(f"j {i} est un point selle")
+        for i in range (len(intersept)): #pour chaque points
+            #----
+            if all([vpi > 0 for vpi in vp[i]]): print(f" {intersept[i]} minimum, instable")
+            elif all([vpi < 0 for vpi in vp[i]]): print(f" {intersept[i]} maximum, stable")
+            else : print(f" {intersept[i]} point selle, instable")
+            #----
+        if tr[i]**2 < 4*det[i]: print(f"{intersept[i]} est une spirale")
+        else: print(f"{intersept[i]} est indéterminé (un neud ?)")
+
 
 
 
 if __name__ == '__main__':
     
     ml = ML()
+    #ml.isoclines(0, 100, 4)
+    #ml.steady_point()
+    ml.middle_branche(0.001, 0.04, 4)
     ml.isoclines(0, 100, 4)
+    #print(ml.V_intersept(ml.w_inf, ml.V_null))
+    ml.steady_point()
    
